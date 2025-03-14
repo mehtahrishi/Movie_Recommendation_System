@@ -1,0 +1,55 @@
+
+🔹 Recommendations for: 2012 using word2vec
+
+🎬 Input Movie: 2012
+📖 Overview: Dr. Adrian Helmsley, part of a worldwide geophysical team investigating the effect on the earth of radiation from unprecedented solar storms, learns t...
+📌 Recommendations:
+   1. The Core (Rating: 5.4)
+   2. Sunshine (Rating: 7.0)
+   3. Dante's Peak (Rating: 5.7)
+   4. Another Earth (Rating: 6.8)
+   5. Superman IV: The Quest for Peace (Rating: 4.1)
+
+   import requests
+
+def test_recommendation(movie_title, method, output_file):
+    base_url = "http://127.0.0.1:5000/recommend"  # Change if your Flask app runs on a different port
+    params = {"movie": movie_title, "method": method}
+    
+    response = requests.get(base_url, params=params)
+    
+    with open(output_file, "w", encoding="utf-8") as f:
+        if response.status_code == 200:
+            data = response.json()
+            output = []
+            output.append(f"\n🔹 Recommendations for: {movie_title} using {method}\n")
+            output.append(f"🎬 Input Movie: {data['movie']['title']}")
+            output.append(f"📖 Overview: {data['movie']['overview'][:150]}...")
+            output.append("📌 Recommendations:")
+            
+            for idx, rec in enumerate(data["recommendations"], 1):
+                output.append(f"   {idx}. {rec['title']} (Rating: {rec['rating']})")
+            
+            f.write("\n".join(output))
+            print(f"✅ Output saved to {output_file}")
+        else:
+            error_message = f"❌ Error: {response.status_code}, {response.json()}"
+            f.write(error_message)
+            print(error_message)
+
+# Test cases for TF-IDF, Word2Vec, and Hybrid approaches
+test_recommendation("2012", "tfidf", "recommendations_tfidf.txt")
+test_recommendation("2012", "word2vec", "recommendations_word2vec.txt")
+test_recommendation("2012", "hybrid", "recommendations_hybrid.txt")
+
+# Compare and analyze results
+def compare_results():
+    files = ["recommendations_tfidf.txt", "recommendations_word2vec.txt", "recommendations_hybrid.txt"]
+    
+    print("\n📊 Comparing Results:\n")
+    for file in files:
+        print(f"\n🔹 {file}")
+        with open(file, "r", encoding="utf-8") as f:
+            print(f.read())
+
+compare_results()
