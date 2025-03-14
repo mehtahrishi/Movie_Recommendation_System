@@ -6,11 +6,11 @@ document.querySelector("button").addEventListener("click", function () {
         return;
     }
 
-    fetch(`http://127.0.0.1:5000/recommend?movie=${encodeURIComponent(movieTitle)}`)
+    fetch(`https://movie-recommendation-system-twuz.onrender.com//recommend?movie=${encodeURIComponent(movieTitle)}`)
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                document.getElementById("results").innerHTML = `<p style="color:red;">${data.error}</p>`;
+                document.getElementById("results").innerHTML = `<p style="color:red;text-align:center;">${data.error}</p>`;
             } else {
                 let recommendations = data.recommendations.map((movie, index) => `
                     <div class="movie-card" data-index="${index}">
